@@ -1,0 +1,7 @@
+torch
+torchaudio
+librosa
+numpy
+sounddevice
+scipy
+resemblyzer

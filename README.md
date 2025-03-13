@@ -211,6 +211,73 @@ Using multiple voice samples during enrollment offers significant advantages:
 4. **Data Augmentation**: Implement audio augmentation to improve model robustness
 5. **Active Learning**: Implement a system to continuously improve voice imprints with new samples
 
+# Solving the Microphone Distance Problem
+
+This guide explains how to solve the common issue where voice recognition works when the microphone is at the same distance as during enrollment, but fails when the distance changes.
+
+## Understanding the Problem
+
+When you enroll with the microphone close to your mouth but identify with it further away (or vice versa), the acoustic properties of your voice change significantly:
+
+- **Close microphone**: Captures more bass frequencies, stronger volume, less room acoustics
+- **Far microphone**: Captures more room acoustics, lower volume, more environmental noise
+
+These differences can cause the voice embeddings to differ enough that the system fails to recognize you, even though it's the same person speaking.
+
+## Solution: Multi-Distance Enrollment
+
+The Voice ID System now includes two key enhancements to solve this problem:
+
+1. **Multi-Distance Enrollment**: Records samples at different microphone distances
+2. **Audio Preprocessing**: Normalizes audio to reduce the impact of microphone distance
+
+## How to Use Multi-Distance Enrollment
+
+1. When enrolling a user, select "yes" when prompted about multi-distance enrollment:
+   ```
+   Would you like to use multi-distance enrollment (more robust)? (y/n): y
+   ```
+
+2. Follow the instructions to alternate between:
+   - **Close microphone**: Normal speaking distance
+   - **Far microphone**: Approximately twice the normal distance
+
+3. The system will:
+   - Record your samples at alternating distances
+   - Create additional processed variants of each sample
+   - Build a voice imprint that works at multiple distances
+
+## Audio Preprocessing Features
+
+The system now automatically applies these preprocessing techniques:
+
+1. **Volume Normalization**: Makes quiet and loud recordings more similar
+2. **Frequency Equalization**: Reduces the impact of microphone distance on frequency response
+3. **Noise Reduction**: Reduces background noise that may interfere with recognition
+4. **Distance Simulation**: Creates synthetic variants of your voice at different distances
+
+## Tips for Best Results
+
+1. **Use at least 6 samples**: More samples mean better coverage of different conditions
+2. **Vary your speech**: Use different phrases, tones, and speaking styles
+3. **Vary distance meaningfully**: Make sure to position the microphone at noticeably different distances
+4. **Consider the environment**: If possible, enroll in the same environment where you'll be identifying
+
+## Technical Background
+
+The multi-distance enhancement works through:
+
+1. **Feature space expansion**: By including samples at different distances, we expand the feature space of what "your voice" means to the system
+2. **Signal processing**: Audio preprocessing normalizes key aspects of the signal that vary with distance
+3. **Data augmentation**: The system generates additional variants to fill in gaps between distances
+
+## Troubleshooting
+
+If you're still experiencing issues with microphone distance:
+
+1. Re-enroll with more extreme distance variations
+2. Try using the `--strict false` option during identification to lower the threshold slightly
+3. Consider your microphone quality - some microphones are more sensitive to distance than others
 
 ## Troubleshooting
 

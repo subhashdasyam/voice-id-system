@@ -5,3 +5,5 @@ numpy
 sounddevice
 scipy
 resemblyzer
+matplotlib
+scikit-learn

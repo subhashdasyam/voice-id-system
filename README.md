@@ -127,6 +127,91 @@ python main.py --mode identify --duration 5
 
 The program records 5 seconds of audio, extracts the speaker embedding, and compares it with the saved imprint using cosine similarity.
 
+
+# Voice ID System Enhancements
+
+This enhancement integrates state-of-the-art deep learning models for more robust speaker recognition. The original system used Resemblyzer for speaker embeddings, but now includes two additional advanced models:
+
+## X-vectors
+
+X-vectors are speaker embeddings derived from Time Delay Neural Networks (TDNNs) that offer several advantages:
+
+- **Temporal Modeling**: Better captures time-dependent patterns in speech
+- **Noise Robustness**: More resilient to background noise and recording conditions
+- **Variable-Length Processing**: Effectively handles utterances of different durations
+- **Discriminative Power**: Produces more distinctive speaker representations
+
+## D-vectors
+
+D-vectors (deep vectors) are neural embeddings extracted using LSTM-based networks that:
+
+- **End-to-End Learning**: Learn speaker characteristics directly from speech features
+- **Context Awareness**: Capture long-range dependencies in speech
+- **Fixed-Dimensional Output**: Create standardized embedding space for comparison
+- **Adaptability**: Can be fine-tuned for specific speaker populations
+
+## System Changes
+
+The enhanced system includes the following changes:
+
+1. New `advanced_models.py` module implementing both x-vector and d-vector architectures
+2. Updated `voice_imprint.py` with support for multiple embedding models
+3. Modified `main.py` with additional command-line options
+4. Expanded requirements for the additional dependencies
+
+## Usage
+
+### Multi-Sample Enrollment
+
+The system now supports collecting multiple voice samples during enrollment for more robust recognition:
+
+```bash
+# Enroll with 5 samples of 10 seconds each using x-vector model
+python main.py --mode enroll --model xvector --device nvidia --samples 5 --duration 10
+```
+
+### Identification
+
+```bash
+# Identify using the same model type used for enrollment
+python main.py --mode identify --model xvector --duration 5
+```
+
+## Technical Notes
+
+1. **Thresholds**: Different embedding types may require different similarity thresholds:
+   - Resemblyzer: 0.75 (default)
+   - X-vectors: 0.70 (generally lower)
+   - D-vectors: 0.75 (similar to Resemblyzer)
+
+2. **Performance Considerations**:
+   - Advanced models require more computational resources
+   - GPU acceleration is recommended for faster processing
+   - First-time model initialization may take longer
+
+3. **Compatibility**:
+   - Enrollments store the model type used, enabling proper comparison
+   - Cross-model comparisons are possible but may reduce accuracy
+   - It's best to use the same model for both enrollment and identification
+
+## Benefits of Multiple Samples
+
+Using multiple voice samples during enrollment offers significant advantages:
+
+1. **Improved Robustness**: Captures more variations in the speaker's voice
+2. **Reduced Sensitivity**: Less affected by individual recording anomalies
+3. **Better Coverage**: Samples different speaking patterns and characteristics
+4. **Higher Accuracy**: Typically results in fewer false accepts/rejects
+
+## Future Work
+
+1. **Pretrained Models**: Add capability to download and use pretrained models from public repositories
+2. **Fine-tuning**: Enable fine-tuning on user-specific data for better performance
+3. **Model Fusion**: Combine multiple embedding types for enhanced accuracy
+4. **Data Augmentation**: Implement audio augmentation to improve model robustness
+5. **Active Learning**: Implement a system to continuously improve voice imprints with new samples
+
+
 ## Troubleshooting
 
 - **Audio Device Issues:**  
